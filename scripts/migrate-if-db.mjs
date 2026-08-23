@@ -13,15 +13,21 @@ const env = {
   DATABASE_URL_UNPOOLED: url,
 };
 
-let lastError;
-for (let attempt = 1; attempt <= 3; attempt += 1) {
+function schemaIsCurrent() {
   try {
-    execSync("npx prisma migrate deploy", { stdio: "inherit", env });
-    process.exit(0);
-  } catch (error) {
-    lastError = error;
-    console.warn(`migrate deploy attempt ${attempt} failed, retrying…`);
+    const status = execSync("npx prisma migrate status", { encoding: "utf8", env });
+    return status.includes("Database schema is up to date");
+  } catch {
+    return false;
   }
 }
 
-throw lastError;
+try {
+  execSync("npx prisma migrate deploy", { stdio: "inherit", env });
+} catch (error) {
+  if (schemaIsCurrent()) {
+    console.warn("migrate deploy failed but schema is current — continuing build");
+  } else {
+    throw error;
+  }
+}
