@@ -1,20 +1,40 @@
 import Link from "next/link";
 import type { PublicListing } from "@/lib/listings";
+import { MIN_PAYMENT } from "@/lib/decay";
 import { displayLink } from "@/lib/normalize";
 import { Avatar } from "./Avatar";
 import { BurnValue } from "./BurnValue";
+import { EmptyState } from "./EmptyState";
 
 function gate(n: number) {
   return String(n).padStart(2, "0");
 }
 
-export function RankedBoard({ listings }: { listings: PublicListing[] }) {
+type BoardContext = {
+  categoryLabel?: string;
+};
+
+export function RankedBoard({
+  listings,
+  categoryLabel,
+}: {
+  listings: PublicListing[];
+  categoryLabel?: string;
+}) {
   if (listings.length === 0) {
+    const scoped = Boolean(categoryLabel);
     return (
-      <p className="empty">
-        Nobody on the ranked board yet.{" "}
-        <Link href="/list">Pay $3 to take gate 01.</Link>
-      </p>
+      <EmptyState
+        title={scoped ? `Nobody ranked in ${categoryLabel} yet` : "The ranked board is empty"}
+        action={{
+          href: "/list",
+          label: scoped ? `List in ${categoryLabel} →` : `Take gate 01 →`,
+        }}
+      >
+        {scoped
+          ? `Be the first in this category. Minimum $${MIN_PAYMENT} — live value burns 10% a day.`
+          : `Pay $${MIN_PAYMENT} or more to claim gate 01. Higher payment, higher gate. Burns 10% every 24 hours.`}
+      </EmptyState>
     );
   }
 
@@ -56,12 +76,23 @@ export function RankedBoard({ listings }: { listings: PublicListing[] }) {
   );
 }
 
-export function OpenList({ listings }: { listings: PublicListing[] }) {
+export function OpenList({
+  listings,
+  categoryLabel,
+}: {
+  listings: PublicListing[];
+  categoryLabel?: string;
+}) {
   if (listings.length === 0) {
+    const scoped = Boolean(categoryLabel);
     return (
-      <p className="empty">
-        The open list is empty. Listings land here only after live value burns to zéro.
-      </p>
+      <EmptyState
+        title={scoped ? `No open listings in ${categoryLabel}` : "The open list is empty"}
+      >
+        {scoped
+          ? `Nobody in ${categoryLabel} has burned to zéro yet. Ranked listings with live value above zero stay on the board above.`
+          : "Listings land here only when live value hits zéro. The profile stays live — payment bought rank, not the URL."}
+      </EmptyState>
     );
   }
 

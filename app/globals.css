@@ -77,6 +77,8 @@ header.mast{padding:36px 0 0}
   color:var(--ink-soft);font-weight:500;min-width:1.5em;text-align:right
 }
 .cat-more-item.on span{box-shadow:inset 0 -2px 0 var(--red)}
+.cat-more-item.cat-more-empty span{color:var(--ink-soft)}
+.cat-more-item.cat-more-empty b{opacity:.45}
 .cat-more-item:hover span{color:var(--navy)}
 .meta .url{color:var(--ink);font-weight:500}
 .cat{
@@ -128,6 +130,33 @@ a.row:hover .name{text-decoration:underline}
 .open-list b{font-size:15px;font-weight:500}
 .open-list span{display:block;font-family:var(--font-mono),monospace;font-size:11px;color:var(--ink-soft);margin-top:3px}
 .empty{padding:28px 0;color:var(--ink-soft);font-size:15px}
+.empty-state{
+  margin:8px 0 32px;padding:22px 24px;border:1px solid var(--rule);
+  background:linear-gradient(180deg, rgba(27,42,74,.03), transparent)
+}
+.empty-state-error{border-color:var(--red);background:rgba(200,16,46,.05)}
+.empty-state-title{
+  font-family:var(--font-display),sans-serif;font-size:26px;
+  letter-spacing:.04em;font-weight:400;color:var(--ink);margin:0 0 8px
+}
+.empty-state-body{margin:0;font-size:15px;line-height:1.5;color:var(--ink-soft);max-width:46ch}
+.empty-state-action{display:inline-block;margin-top:18px}
+.success-panel{margin-top:28px}
+.success-gate{
+  display:inline-block;font-family:var(--font-display),sans-serif;font-size:56px;
+  line-height:1;border:2px solid var(--navy);text-align:center;padding:12px 20px 8px;
+  background:linear-gradient(90deg, rgba(200,16,46,.08), transparent 70%)
+}
+.success-gate .gate{
+  display:block;font-family:var(--font-mono),monospace;font-size:9px;
+  letter-spacing:.14em;color:var(--ink-soft);margin-bottom:4px
+}
+.success-lede{margin:20px 0 0;font-size:17px;line-height:1.5;max-width:46ch}
+.success-lede code{font-family:var(--font-mono),monospace;font-size:16px}
+.success-note{
+  margin:12px 0 0;font-family:var(--font-mono),monospace;font-size:12px;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)
+}
 .form{margin-top:52px;border:1px solid var(--navy);padding:24px;position:relative}
 .form:before{
   content:"STANDBY";position:absolute;top:-11px;right:16px;

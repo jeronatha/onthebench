@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { Masthead } from "@/components/SiteChrome";
 import { FADING_HINT, MIN_PAYMENT, ZERO_EPSILON } from "@/lib/decay";
 import { pageMetadata } from "@/lib/seo";
+import { SITE_DOMAIN } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
   title: "Rules",
   description:
-    "How ranking, decay, top-ups, and ownership work on onthebench.lol. Live value burns 10% a day. You leave the ranked board only at zéro.",
+    `How ranking, decay, top-ups, and ownership work on ${SITE_DOMAIN}. Live value burns 10% a day. You leave the ranked board only at zéro.`,
   path: "/rules",
 });
 

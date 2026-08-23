@@ -8,6 +8,7 @@ import { prisma } from "@/lib/db";
 import { displayLink } from "@/lib/normalize";
 import { toPublicListing } from "@/lib/listings";
 import { pageMetadata } from "@/lib/seo";
+import { SITE_DOMAIN } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -37,7 +38,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
   if (!row) notFound();
 
   const listing = toPublicListing(row);
-  const mailto = `mailto:${row.contactEmail}?subject=onthebench — ${listing.name}`;
+  const mailto = `mailto:${row.contactEmail}?subject=${SITE_DOMAIN} — ${listing.name}`;
 
   return (
     <>

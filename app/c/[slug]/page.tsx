@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CategoryRail } from "@/components/CategoryRail";
 import { OpenList, RankedBoard } from "@/components/Board";
+import { EmptyState } from "@/components/EmptyState";
 import { Masthead } from "@/components/SiteChrome";
 import { categoryBySlug } from "@/lib/categories";
 import { pageMetadata } from "@/lib/seo";
+import { SITE_DOMAIN } from "@/lib/site";
 import { safeBoard } from "@/lib/listings";
 
 export const dynamic = "force-dynamic";
@@ -20,7 +22,7 @@ export async function generateMetadata({
 
   return pageMetadata({
     title: `${category.label} freelancers & agencies`,
-    description: `Freelancers and agencies in ${category.label}, ranked by live value on onthebench.lol. Burns 10% a day — the top is whoever's actually free.`,
+    description: `Freelancers and agencies in ${category.label}, ranked by live value on ${SITE_DOMAIN}. Burns 10% a day — the top is whoever's actually free.`,
     path: `/c/${slug}`,
   });
 }
@@ -30,7 +32,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   const category = categoryBySlug(slug);
   if (!category) notFound();
 
-  const { ranked, open, all, counts } = await safeBoard(slug);
+  const { ranked, open, all, counts, dbError } = await safeBoard(slug);
 
   return (
     <>
@@ -52,19 +54,25 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         <CategoryRail active={slug} counts={counts} total={all.length} />
       </Masthead>
 
-      <main className="anim-main">
-        <div className="section-head">
-          <span>Priority · {category.label}</span>
-          <span>Live value</span>
-        </div>
-        <RankedBoard listings={ranked} />
+      {dbError ? (
+        <EmptyState variant="error" title="Board offline">
+          Database is not connected. Set DATABASE_URL on Vercel and redeploy.
+        </EmptyState>
+      ) : (
+        <main className="anim-main">
+          <div className="section-head">
+            <span>Priority · {category.label}</span>
+            <span>Live value</span>
+          </div>
+          <RankedBoard listings={ranked} categoryLabel={category.label} />
 
-        <div className="section-head">
-          <span>Open listings</span>
-          <span>Most recent first</span>
-        </div>
-        <OpenList listings={open} />
-      </main>
+          <div className="section-head">
+            <span>Open listings</span>
+            <span>Most recent first</span>
+          </div>
+          <OpenList listings={open} categoryLabel={category.label} />
+        </main>
+      )}
     </>
   );
 }

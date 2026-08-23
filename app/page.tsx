@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { CategoryRail } from "@/components/CategoryRail";
 import { OpenList, RankedBoard } from "@/components/Board";
+import { EmptyState } from "@/components/EmptyState";
 import { Masthead } from "@/components/SiteChrome";
 import { pageMetadata } from "@/lib/seo";
 import { SITE_TAGLINE } from "@/lib/site";
@@ -37,22 +38,28 @@ export default async function HomePage() {
       </Masthead>
 
       {dbError ? (
-        <p className="empty">Database is not connected. Set DATABASE_URL and redeploy.</p>
-      ) : null}
+        <EmptyState
+          variant="error"
+          title="Board offline"
+          action={{ href: "/list", label: "Try listing anyway →" }}
+        >
+          Database is not connected. Set DATABASE_URL on Vercel and redeploy.
+        </EmptyState>
+      ) : (
+        <main className="anim-main">
+          <div className="section-head">
+            <span>Priority · ranked</span>
+            <span>Live value</span>
+          </div>
+          <RankedBoard listings={ranked} />
 
-      <main className="anim-main">
-        <div className="section-head">
-          <span>Priority · ranked</span>
-          <span>Live value</span>
-        </div>
-        <RankedBoard listings={ranked} />
-
-        <div className="section-head">
-          <span>Open listings</span>
-          <span>Most recent first</span>
-        </div>
-        <OpenList listings={open} />
-      </main>
+          <div className="section-head">
+            <span>Open listings</span>
+            <span>Most recent first</span>
+          </div>
+          <OpenList listings={open} />
+        </main>
+      )}
     </>
   );
 }

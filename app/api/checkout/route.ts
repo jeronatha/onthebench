@@ -4,6 +4,7 @@ import { emailsMatch, OwnerEmailMismatchError, assertListingOwner } from "@/lib/
 import { listingInputSchema } from "@/lib/listing-fields";
 import { applyPayment } from "@/lib/listings";
 import { normalizeLink } from "@/lib/normalize";
+import { SITE_DOMAIN } from "@/lib/site";
 import { allowFreeList, getStripe, paymentsConfigured, siteUrl } from "@/lib/stripe";
 
 export const runtime = "nodejs";
@@ -88,7 +89,7 @@ export async function POST(req: Request) {
           currency: "usd",
           unit_amount: data.amount * 100,
           product_data: {
-            name: `onthebench.lol · ${data.name}`,
+            name: `${SITE_DOMAIN} · ${data.name}`,
             description: "Live value on the board. Burns 10% a day.",
           },
         },

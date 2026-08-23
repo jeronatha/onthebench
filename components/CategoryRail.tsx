@@ -49,9 +49,6 @@ export function CategoryRail({ active, counts, total }: Props) {
         >
           {open ? "Less" : "More"}
         </button>
-        {withListings.length === 0 && total === 0 ? (
-          <span className="cat">No listings yet</span>
-        ) : null}
       </nav>
 
       {open ? (
@@ -59,7 +56,7 @@ export function CategoryRail({ active, counts, total }: Props) {
           {sorted.map((c) => (
             <Link
               key={c.slug}
-              className={`cat-more-item${active === c.slug ? " on" : ""}`}
+              className={`cat-more-item${active === c.slug ? " on" : ""}${c.count === 0 ? " cat-more-empty" : ""}`}
               href={`/c/${c.slug}`}
               onClick={() => setOpen(false)}
             >

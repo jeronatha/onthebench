@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Masthead } from "@/components/SiteChrome";
+import { PaymentConfetti } from "@/components/PaymentConfetti";
 import { applyFromStripeSession } from "@/lib/apply-session";
 import { liveValue } from "@/lib/decay";
 import { fetchBoard } from "@/lib/listings";
@@ -31,7 +32,7 @@ export default async function SuccessPage({
           actionHref="/list"
           actionLabel="Try again"
         />
-        <main className="prose">
+        <main className="prose anim-main">
           <p>
             Your payment went through, but the email used at checkout did not match the listing on
             file. Contact us with your Stripe receipt and we will sort it out.
@@ -48,23 +49,44 @@ export default async function SuccessPage({
   const current = liveValue(Number(result.listing.lastValue), result.listing.lastPaidAt);
   const gate = ranked.findIndex((l) => l.id === result.listing.id) + 1;
   const position = gate > 0 ? gate : ranked.length + 1;
+  const gateLabel = String(position).padStart(2, "0");
 
   return (
     <>
+      <PaymentConfetti />
       <Masthead
-        kicker="You're on the list"
-        tag={`Gate ${String(position).padStart(2, "0")}. Live value burns 10% a day from here.`}
+        kicker={result.toppedUp ? "Top-up accepted" : "Payment accepted"}
+        tag={`Gate ${gateLabel}. Live value burns 10% a day from here.`}
         actionHref={`/f/${result.listing.handle}`}
         actionLabel="Your profile"
       />
-      <main className="prose">
-        <p>
-          Live value is <code>${current.toFixed(2)}</code>
-          {result.toppedUp ? " after the top-up." : "."} You&apos;re not ranked anymore only if: zéro.
+      <main className="success-panel anim-main">
+        <div className="success-gate">
+          <span className="gate">GATE</span>
+          {gateLabel}
+        </div>
+        <p className="success-lede">
+          {result.toppedUp ? (
+            <>
+              <b>{result.listing.name}</b> topped up. Live value is now{" "}
+              <code>${current.toFixed(2)}</code>.
+            </>
+          ) : (
+            <>
+              <b>{result.listing.name}</b> is on the ranked board. Live value starts at{" "}
+              <code>${current.toFixed(2)}</code>.
+            </>
+          )}
         </p>
-        <p>
-          <Link href="/">Back to the board</Link>
-        </p>
+        <p className="success-note">You&apos;re not ranked anymore only if: zéro.</p>
+        <div className="profile-actions">
+          <Link className="btn" href={`/f/${result.listing.handle}`}>
+            View profile
+          </Link>
+          <Link className="btn btn-ghost" href="/" style={{ color: "var(--navy)", borderColor: "var(--navy)" }}>
+            Back to the board
+          </Link>
+        </div>
       </main>
     </>
   );

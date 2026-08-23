@@ -1,4 +1,5 @@
 import Stripe from "stripe";
+import { SITE_DOMAIN } from "./site";
 
 export function getStripe(): Stripe {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -17,5 +18,7 @@ export function allowFreeList(): boolean {
 }
 
 export function siteUrl(): string {
-  return (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, "");
+  const fallback =
+    process.env.NODE_ENV === "production" ? `https://${SITE_DOMAIN}` : "http://localhost:3000";
+  return (process.env.NEXT_PUBLIC_SITE_URL || fallback).replace(/\/$/, "");
 }
