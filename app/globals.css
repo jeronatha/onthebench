@@ -1,7 +1,4 @@
-.sr-only{
-  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
-  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0
-}
+:root{
   --paper:#F5F0E6;
   --ink:#1B2A4A;
   --ink-soft:#5C6578;
@@ -10,6 +7,10 @@
   --red:#C8102E;
   --tan:#D4C4A0;
   --track:#DDD4C2;
+}
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
