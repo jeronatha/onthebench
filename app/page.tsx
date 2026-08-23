@@ -1,0 +1,58 @@
+import type { Metadata } from "next";
+import { CategoryRail } from "@/components/CategoryRail";
+import { OpenList, RankedBoard } from "@/components/Board";
+import { Masthead } from "@/components/SiteChrome";
+import { pageMetadata } from "@/lib/seo";
+import { SITE_TAGLINE } from "@/lib/site";
+import { safeBoard } from "@/lib/listings";
+
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = pageMetadata({
+  description: SITE_TAGLINE,
+  path: "/",
+});
+
+export default async function HomePage() {
+  const { ranked, open, all, counts, usingMock } = await safeBoard();
+
+  return (
+    <>
+      <Masthead>
+        <div className="strip">
+          <span className="stat">
+            Ranked<b>{ranked.length}</b>
+          </span>
+          <span className="stat">
+            Open listings<b>{open.length}</b>
+          </span>
+          <span className="stat">
+            On the board<b>{all.length}</b>
+          </span>
+          <span className="stat">
+            Burn rate<b>10% / 24h</b>
+          </span>
+        </div>
+        <CategoryRail counts={counts} total={all.length} />
+      </Masthead>
+
+      {usingMock ? (
+        <p className="demo-banner anim-rise">Demo listings — connect a database to go live.</p>
+      ) : null}
+
+      <main className="anim-main">
+        <div className="section-head">
+          <span>Priority · ranked</span>
+          <span>Live value</span>
+        </div>
+        <RankedBoard listings={ranked} />
+
+        <div className="section-head">
+          <span>Open listings</span>
+          <span>Most recent first</span>
+        </div>
+        <OpenList listings={open} />
+      </main>
+    </>
+  );
+}
