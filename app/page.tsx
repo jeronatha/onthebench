@@ -14,7 +14,7 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default async function HomePage() {
-  const { ranked, open, all, counts, usingMock } = await safeBoard();
+  const { ranked, open, all, counts, dbError } = await safeBoard();
 
   return (
     <>
@@ -36,8 +36,8 @@ export default async function HomePage() {
         <CategoryRail counts={counts} total={all.length} />
       </Masthead>
 
-      {usingMock ? (
-        <p className="demo-banner anim-rise">Demo listings — connect a database to go live.</p>
+      {dbError ? (
+        <p className="empty">Database is not connected. Set DATABASE_URL and redeploy.</p>
       ) : null}
 
       <main className="anim-main">

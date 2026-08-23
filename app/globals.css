@@ -255,11 +255,6 @@ footer.site a{color:var(--ink-soft);text-decoration:none}
 .rail .cat:nth-child(6){animation-delay:.2s}
 .rail .cat:nth-child(7){animation-delay:.24s}
 .rail .cat:nth-child(8){animation-delay:.28s}
-.demo-banner{
-  margin-top:18px;padding:10px 14px;border:1px dashed var(--rule);
-  font-family:var(--font-mono),monospace;font-size:11px;letter-spacing:.08em;
-  text-transform:uppercase;color:var(--ink-soft)
-}
 .rules-callout{
   border:2px solid var(--navy);padding:18px 20px;margin:24px 0;
   background:linear-gradient(135deg, rgba(200,16,46,.06), transparent 70%)

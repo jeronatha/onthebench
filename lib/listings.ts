@@ -200,15 +200,16 @@ export async function fetchBoard(categorySlug?: string) {
 export async function safeBoard(categorySlug?: string) {
   try {
     const [board, counts] = await Promise.all([fetchBoard(categorySlug), categoryCounts()]);
-    if (board.all.length > 0) {
-      return { ...board, counts, dbError: false, usingMock: false };
-    }
-    const { mockBoard } = await import("./mock-board");
-    return { ...mockBoard(categorySlug), dbError: false, usingMock: true };
+    return { ...board, counts, dbError: false };
   } catch (error) {
     console.error("Database unavailable", error);
-    const { mockBoard } = await import("./mock-board");
-    return { ...mockBoard(categorySlug), dbError: false, usingMock: true };
+    return {
+      ranked: [],
+      open: [],
+      all: [],
+      counts: {} as Record<string, number>,
+      dbError: true,
+    };
   }
 }
 
@@ -221,16 +222,7 @@ export async function categoryCounts(): Promise<Record<string, number>> {
 }
 
 export async function previewRank(amount: number, categorySlug?: string): Promise<number> {
-  try {
-    const { ranked } = await fetchBoard(categorySlug);
-    if (ranked.length > 0) {
-      return ranked.filter((l) => l.liveValue >= amount).length + 1;
-    }
-  } catch {
-    /* use mock board */
-  }
-  const { mockBoard } = await import("./mock-board");
-  const { ranked } = mockBoard(categorySlug);
+  const { ranked } = await fetchBoard(categorySlug);
   return ranked.filter((l) => l.liveValue >= amount).length + 1;
 }
 
