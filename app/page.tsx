@@ -38,12 +38,8 @@ export default async function HomePage() {
       </Masthead>
 
       {dbError ? (
-        <EmptyState
-          variant="error"
-          title="Board offline"
-          action={{ href: "/list", label: "Try listing anyway →" }}
-        >
-          Database is not connected. Set DATABASE_URL on Vercel and redeploy.
+        <EmptyState variant="error" title="Board temporarily unavailable">
+          We can&apos;t load listings right now. Try again in a few minutes.
         </EmptyState>
       ) : (
         <main className="anim-main">
@@ -53,11 +49,15 @@ export default async function HomePage() {
           </div>
           <RankedBoard listings={ranked} />
 
-          <div className="section-head">
-            <span>Open listings</span>
-            <span>Most recent first</span>
-          </div>
-          <OpenList listings={open} />
+          {!(ranked.length === 0 && open.length === 0) ? (
+            <>
+              <div className="section-head">
+                <span>Open listings</span>
+                <span>Most recent first</span>
+              </div>
+              <OpenList listings={open} rankedCount={ranked.length} />
+            </>
+          ) : null}
         </main>
       )}
     </>

@@ -10,10 +10,6 @@ function gate(n: number) {
   return String(n).padStart(2, "0");
 }
 
-type BoardContext = {
-  categoryLabel?: string;
-};
-
 export function RankedBoard({
   listings,
   categoryLabel,
@@ -25,15 +21,15 @@ export function RankedBoard({
     const scoped = Boolean(categoryLabel);
     return (
       <EmptyState
-        title={scoped ? `Nobody ranked in ${categoryLabel} yet` : "The ranked board is empty"}
+        title={scoped ? `Nobody ranked in ${categoryLabel} yet` : "Nobody on the ranked board yet"}
         action={{
           href: "/list",
           label: scoped ? `List in ${categoryLabel} →` : `Claim the top spot →`,
         }}
       >
         {scoped
-          ? `Be the first in this category. Minimum $${MIN_PAYMENT} — live value burns 10% a day.`
-          : `Pay $${MIN_PAYMENT} or more to claim the top spot. Higher payment, higher rank. Burns 10% every 24 hours.`}
+          ? `Be the first. Pay $${MIN_PAYMENT} or more — live value burns 10% a day.`
+          : `Pay $${MIN_PAYMENT} or more to claim the top spot. Higher payment, higher rank. Live value burns 10% a day.`}
       </EmptyState>
     );
   }
@@ -79,19 +75,23 @@ export function RankedBoard({
 export function OpenList({
   listings,
   categoryLabel,
+  rankedCount = 0,
 }: {
   listings: PublicListing[];
   categoryLabel?: string;
+  rankedCount?: number;
 }) {
   if (listings.length === 0) {
+    if (rankedCount === 0) return null;
+
     const scoped = Boolean(categoryLabel);
     return (
       <EmptyState
         title={scoped ? `No open listings in ${categoryLabel}` : "The open list is empty"}
       >
         {scoped
-          ? `Nobody in ${categoryLabel} has burned to zéro yet. Ranked listings with live value above zero stay on the board above.`
-          : "Listings land here only when live value hits zéro. The profile stays live — payment bought rank, not the URL."}
+          ? "When live value hits zéro, listings move here. The profile stays live."
+          : "Listings move here when live value hits zéro. The profile stays live — payment bought rank, not the URL."}
       </EmptyState>
     );
   }
