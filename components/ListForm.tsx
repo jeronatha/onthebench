@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { CATEGORIES } from "@/lib/categories";
 import { MIN_PAYMENT } from "@/lib/decay";
@@ -255,6 +256,10 @@ export function ListForm({ initialRank = 1 }: Props) {
           Rank <b>#{rank}</b> at this amount. Live value burns 10% a day from payment.
         </span>
       </div>
+
+      <p className="hint form-rules">
+        <Link href="/rules">Read the rules</Link> — ranking, decay, top-ups, and what payment buys.
+      </p>
     </form>
   );
 }
