@@ -4,7 +4,7 @@ import { Masthead } from "@/components/SiteChrome";
 import { PaymentConfetti } from "@/components/PaymentConfetti";
 import { applyFromStripeSession } from "@/lib/apply-session";
 import { liveValue } from "@/lib/decay";
-import { fetchBoard } from "@/lib/listings";
+import { fetchBoard, gateForListingId } from "@/lib/listings";
 import { getStripe } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
@@ -47,8 +47,8 @@ export default async function SuccessPage({
 
   const { ranked } = await fetchBoard();
   const current = liveValue(Number(result.listing.lastValue), result.listing.lastPaidAt);
-  const gate = ranked.findIndex((l) => l.id === result.listing.id) + 1;
-  const position = gate > 0 ? gate : ranked.length + 1;
+  const gate = gateForListingId(result.listing.id, ranked);
+  const position = gate ?? ranked.length + 1;
   const gateLabel = String(position).padStart(2, "0");
 
   return (
@@ -56,7 +56,7 @@ export default async function SuccessPage({
       <PaymentConfetti />
       <Masthead
         kicker={result.toppedUp ? "Top-up accepted" : "Payment accepted"}
-        tag={`Gate ${gateLabel}. Live value burns 10% a day from here.`}
+        tag={`#${gateLabel} on the board. Live value burns 10% a day from here.`}
         actionHref={`/f/${result.listing.handle}`}
         actionLabel="Your profile"
       />

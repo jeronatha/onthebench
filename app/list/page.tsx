@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ListForm } from "@/components/ListForm";
 import { Masthead } from "@/components/SiteChrome";
+import { MIN_PAYMENT } from "@/lib/decay";
 import { pageMetadata } from "@/lib/seo";
 import { previewRank } from "@/lib/listings";
 
@@ -14,13 +15,13 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default async function ListPage() {
-  const rank = await previewRank(12).catch(() => 1);
+  const rank = await previewRank(MIN_PAYMENT).catch(() => 1);
 
   return (
     <>
       <Masthead
         kicker="List yourself"
-        tag="Pay to sit higher on the ranked board. Same URL tops up your live value. Minimum $3."
+        tag={`Pay to sit higher on the ranked board. Same URL tops up your live value. Minimum $${MIN_PAYMENT}.`}
         actionHref="/"
         actionLabel="Back to the board"
       />

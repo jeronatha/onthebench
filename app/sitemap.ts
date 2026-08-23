@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next";
 import { CATEGORIES } from "@/lib/categories";
-import { prisma } from "@/lib/db";
+import { getSitemapProfiles } from "@/lib/board-cache";
 import { siteUrl } from "@/lib/stripe";
+
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl();
@@ -20,18 +22,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  let profileRoutes: MetadataRoute.Sitemap = [];
-  try {
-    const listings = await prisma.listing.findMany({ select: { handle: true, lastPaidAt: true } });
-    profileRoutes = listings.map((l) => ({
-      url: `${base}/f/${l.handle}`,
-      lastModified: l.lastPaidAt,
-      changeFrequency: "daily" as const,
-      priority: 0.5,
-    }));
-  } catch {
-    /* database optional */
-  }
+  const listings = await getSitemapProfiles();
+  const profileRoutes: MetadataRoute.Sitemap = listings.map((l) => ({
+    url: `${base}/f/${l.handle}`,
+    lastModified: l.lastPaidAt,
+    changeFrequency: "daily" as const,
+    priority: 0.5,
+  }));
 
   return [...staticRoutes, ...categoryRoutes, ...profileRoutes];
 }

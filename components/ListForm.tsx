@@ -19,7 +19,7 @@ type Props = {
 };
 
 export function ListForm({ initialRank = 1 }: Props) {
-  const [amount, setAmount] = useState(12);
+  const [amount, setAmount] = useState(MIN_PAYMENT);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -142,7 +142,7 @@ export function ListForm({ initialRank = 1 }: Props) {
         {match ? (
           <p className="notice">
             <b>{match.name}</b> is already listed
-            {match.gate ? ` at gate ${String(match.gate).padStart(2, "0")}` : ""}. To top up, use the
+            {match.gate ? ` at #${String(match.gate).padStart(2, "0")}` : ""}. To top up, use the
             same URL and enter <b>{match.maskedEmail}</b>. A different email cannot touch this
             listing. Live value is ${match.liveValue.toFixed(2)}.
           </p>
@@ -252,7 +252,7 @@ export function ListForm({ initialRank = 1 }: Props) {
           {pending ? "Redirecting…" : `Pay $${amount || MIN_PAYMENT} →`}
         </button>
         <span className="pos">
-          Gate <b>#{rank}</b> at this amount. Live value burns 10% a day from payment.
+          Rank <b>#{rank}</b> at this amount. Live value burns 10% a day from payment.
         </span>
       </div>
     </form>

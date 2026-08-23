@@ -1,7 +1,7 @@
 export const DAILY_DECAY = 0.9;
 export const FADING_HINT = 1;
 export const ZERO_EPSILON = 0.005;
-export const MIN_PAYMENT = 3;
+export const MIN_PAYMENT = 1;
 
 export type ListingState = "ranked" | "fading" | "open";
 

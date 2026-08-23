@@ -41,10 +41,23 @@ export function Masthead({
 export function SiteFooter() {
   return (
     <footer className="site">
-      <span>Payments by Stripe</span>
-      <Link href="/rules">Rules</Link>
-      <Link href="/list">List</Link>
-      <span style={{ marginLeft: "auto" }}>You&apos;re not ranked anymore only if: zéro</span>
+      <div className="site-row">
+        <span>Payments by Stripe</span>
+        <Link href="/rules">Rules</Link>
+        <Link href="/list">List</Link>
+        <span className="site-row-end">You&apos;re not ranked anymore only if: zéro</span>
+      </div>
+      <p className="site-note">
+        Inspired by the clarity of{" "}
+        <a href="https://outbid.lol/rules" rel="noopener noreferrer">
+          outbid.lol
+        </a>{" "}
+        and{" "}
+        <a href="https://lastspot.lol/rules" rel="noopener noreferrer">
+          lastspot.lol
+        </a>
+        . Different product — availability, not products — but the rules should be this explicit.
+      </p>
     </footer>
   );
 }

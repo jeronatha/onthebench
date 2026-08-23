@@ -28,12 +28,12 @@ export function RankedBoard({
         title={scoped ? `Nobody ranked in ${categoryLabel} yet` : "The ranked board is empty"}
         action={{
           href: "/list",
-          label: scoped ? `List in ${categoryLabel} →` : `Take gate 01 →`,
+          label: scoped ? `List in ${categoryLabel} →` : `Claim the top spot →`,
         }}
       >
         {scoped
           ? `Be the first in this category. Minimum $${MIN_PAYMENT} — live value burns 10% a day.`
-          : `Pay $${MIN_PAYMENT} or more to claim gate 01. Higher payment, higher gate. Burns 10% every 24 hours.`}
+          : `Pay $${MIN_PAYMENT} or more to claim the top spot. Higher payment, higher rank. Burns 10% every 24 hours.`}
       </EmptyState>
     );
   }

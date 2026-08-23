@@ -4,13 +4,13 @@ import { notFound } from "next/navigation";
 import { Avatar } from "@/components/Avatar";
 import { BurnValue } from "@/components/BurnValue";
 import { Masthead } from "@/components/SiteChrome";
-import { prisma } from "@/lib/db";
+import { getListingByHandle } from "@/lib/listing-queries";
 import { displayLink } from "@/lib/normalize";
 import { toPublicListing } from "@/lib/listings";
 import { pageMetadata } from "@/lib/seo";
 import { SITE_DOMAIN } from "@/lib/site";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,
@@ -19,7 +19,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { handle } = await params;
   try {
-    const row = await prisma.listing.findUnique({ where: { handle } });
+    const row = await getListingByHandle(handle);
     if (!row) return pageMetadata({ title: "Profile not found" });
 
     return pageMetadata({
@@ -34,7 +34,7 @@ export async function generateMetadata({
 
 export default async function ProfilePage({ params }: { params: Promise<{ handle: string }> }) {
   const { handle } = await params;
-  const row = await prisma.listing.findUnique({ where: { handle } });
+  const row = await getListingByHandle(handle);
   if (!row) notFound();
 
   const listing = toPublicListing(row);

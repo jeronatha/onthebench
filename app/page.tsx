@@ -7,7 +7,7 @@ import { pageMetadata } from "@/lib/seo";
 import { SITE_TAGLINE } from "@/lib/site";
 import { safeBoard } from "@/lib/listings";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = pageMetadata({
   description: SITE_TAGLINE,

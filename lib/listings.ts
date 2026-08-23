@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import { getListingRows, revalidateBoardCache, type ListingBoardRow } from "./board-cache";
 import { prisma } from "./db";
 import { liveValue, listingState } from "./decay";
 import { categoryBySlug } from "./categories";
@@ -140,6 +141,7 @@ export async function applyPayment(payload: ApplyPayload) {
       return updated;
     });
 
+    revalidateBoardCache(listing.handle, listing.categorySlug);
     return { listing, created: false, toppedUp: true };
   }
 
@@ -173,15 +175,26 @@ export async function applyPayment(payload: ApplyPayload) {
     return created;
   });
 
+  revalidateBoardCache(listing.handle, listing.categorySlug);
   return { listing, created: true, toppedUp: false };
 }
 
-export async function fetchBoard(categorySlug?: string) {
-  const rows = await prisma.listing.findMany({
-    where: categorySlug ? { categorySlug } : undefined,
-  });
-  const now = Date.now();
-  const listings = rows.map((row) => toPublicListing(row, now));
+export function gateForListingId(listingId: string, ranked: PublicListing[]): number | null {
+  const gate = ranked.findIndex((l) => l.id === listingId) + 1;
+  return gate > 0 ? gate : null;
+}
+
+function categoryCountsFromRows(rows: ListingBoardRow[]): Record<string, number> {
+  const counts: Record<string, number> = {};
+  for (const row of rows) {
+    counts[row.categorySlug] = (counts[row.categorySlug] ?? 0) + 1;
+  }
+  return counts;
+}
+
+function buildBoardLists(rows: ListingBoardRow[], categorySlug?: string, now = Date.now()) {
+  const scoped = categorySlug ? rows.filter((row) => row.categorySlug === categorySlug) : rows;
+  const listings = scoped.map((row) => toPublicListing(row, now));
 
   const ranked = listings
     .filter((l) => l.state === "ranked" || l.state === "fading")
@@ -197,9 +210,16 @@ export async function fetchBoard(categorySlug?: string) {
   return { ranked, open, all: listings };
 }
 
+export async function fetchBoard(categorySlug?: string) {
+  const rows = await getListingRows();
+  return buildBoardLists(rows, categorySlug);
+}
+
 export async function safeBoard(categorySlug?: string) {
   try {
-    const [board, counts] = await Promise.all([fetchBoard(categorySlug), categoryCounts()]);
+    const rows = await getListingRows();
+    const counts = categoryCountsFromRows(rows);
+    const board = buildBoardLists(rows, categorySlug);
     return { ...board, counts, dbError: false };
   } catch (error) {
     console.error("Database unavailable", error);
@@ -213,16 +233,9 @@ export async function safeBoard(categorySlug?: string) {
   }
 }
 
-export async function categoryCounts(): Promise<Record<string, number>> {
-  const groups = await prisma.listing.groupBy({
-    by: ["categorySlug"],
-    _count: { _all: true },
-  });
-  return Object.fromEntries(groups.map((g) => [g.categorySlug, g._count._all]));
-}
-
 export async function previewRank(amount: number, categorySlug?: string): Promise<number> {
-  const { ranked } = await fetchBoard(categorySlug);
+  const rows = await getListingRows();
+  const { ranked } = buildBoardLists(rows, categorySlug);
   return ranked.filter((l) => l.liveValue >= amount).length + 1;
 }
 
@@ -248,8 +261,9 @@ export async function lookupByLink(link: string) {
   if (!row) return null;
 
   const publicListing = toPublicListing(row);
-  const { ranked } = await fetchBoard();
-  const gate = ranked.findIndex((l) => l.id === row.id) + 1;
+  const rows = await getListingRows();
+  const { ranked } = buildBoardLists(rows);
+  const gate = gateForListingId(row.id, ranked);
 
   return {
     exists: true as const,
@@ -258,6 +272,6 @@ export async function lookupByLink(link: string) {
     maskedEmail: maskEmail(row.contactEmail),
     liveValue: publicListing.liveValue,
     state: publicListing.state,
-    gate: gate > 0 ? gate : null,
+    gate,
   };
 }

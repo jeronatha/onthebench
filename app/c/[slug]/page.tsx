@@ -9,7 +9,7 @@ import { pageMetadata } from "@/lib/seo";
 import { SITE_DOMAIN } from "@/lib/site";
 import { safeBoard } from "@/lib/listings";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,

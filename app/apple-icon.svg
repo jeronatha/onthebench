@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" fill="none">
+  <rect width="180" height="180" fill="#1B2A4A"/>
+  <text x="48" y="108" font-family="Arial, Helvetica, sans-serif" font-size="88" font-weight="700" fill="#C8102E">0</text>
+  <text x="98" y="108" font-family="Arial, Helvetica, sans-serif" font-size="88" font-weight="700" fill="#F5F0E6">1</text>
+  <path fill="#F5F0E6" d="M0 166c6-8 12-8 18 0s12 8 18 0 12-8 18 0 12 8 18 0 12-8 18 0 12 8 18 0 12-8 18 0 12 8 18 0 12-8 18 0 12 8 18 0 12-8 18 0 12 8 18 0 12-8 18 0 12 8 18 0 12-8 18 0 12 8 18 0 12-8 18 0 12 8 18 0 12-8 18 0 12 8 18 0V180H0v-14z"/>
+</svg>
