@@ -1,4 +1,4 @@
 {
   "framework": "nextjs",
-  "buildCommand": "prisma generate && node scripts/migrate-if-db.mjs && next build"
+  "buildCommand": "prisma generate && node scripts/migrate-if-db.mjs && node scripts/seed-if-empty.mjs && next build"
 }
