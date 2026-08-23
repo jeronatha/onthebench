@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && node scripts/migrate-if-db.mjs && node scripts/seed-if-empty.mjs && next build",
+    "build": "prisma generate && node scripts/migrate-if-db.mjs && node scripts/clear-if-flag.mjs && next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate deploy",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "db:clear": "tsx scripts/db-clear.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
